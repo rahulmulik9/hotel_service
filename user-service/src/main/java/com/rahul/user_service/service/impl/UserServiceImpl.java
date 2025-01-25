@@ -1,6 +1,7 @@
 package com.rahul.user_service.service.impl;
 
 
+import com.rahul.user_service.exception.ResourceNotFoundException;
 import com.rahul.user_service.repository.UserRepository;
 import com.rahul.user_service.entity.User;
 import com.rahul.user_service.service.UserService;
@@ -33,7 +34,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUser(String userId) {
-        return userRepository.findById(userId).orElseThrow();
+        return userRepository.findById(userId).orElseThrow(()->new ResourceNotFoundException("User not found"));
     }
 
 
