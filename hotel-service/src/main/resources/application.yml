@@ -1,5 +1,5 @@
 server:
-  port: 8082
+  port: 8083
 
 spring:
   datasource:
@@ -10,6 +10,8 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+  application:
+    name: hotel-service
 
 eureka:
   instance:

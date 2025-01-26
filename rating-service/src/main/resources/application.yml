@@ -3,12 +3,12 @@ spring:
     mongodb:
       host: localhost
       port: 27017
-      database: rating-service
+      database: rating_service
   application:
-    name: rating_service
+    name: rating-service
 
 server:
-  port: 8083
+  port: 8082
 
 eureka:
   instance:
