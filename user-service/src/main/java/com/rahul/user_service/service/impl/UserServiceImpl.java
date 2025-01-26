@@ -1,6 +1,8 @@
 package com.rahul.user_service.service.impl;
 
 
+import com.rahul.user_service.entity.Hotel;
+import com.rahul.user_service.entity.Rating;
 import com.rahul.user_service.exception.ResourceNotFoundException;
 import com.rahul.user_service.repository.UserRepository;
 import com.rahul.user_service.entity.User;
@@ -9,15 +11,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private RestTemplate restTemplate;
 
 
     private Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
@@ -31,14 +40,24 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getAllUser() {
-        //implement RATING SERVICE CALL: USING REST TEMPLATE
         return userRepository.findAll();
     }
 
     @Override
     public User getUser(String userId) {
-        return userRepository.findById(userId).orElseThrow(()->new ResourceNotFoundException("User not found"));
-    }
 
+        User theUser = userRepository.findById(userId).orElseThrow(()->new ResourceNotFoundException("User not found"));
+        //get rating from user directly (require the bean of  Rest template object which is declared in the main class)
+        //ArrayList ratingsOfUser = restTemplate.getForObject("http://localhost:8083/ratings/users/e1f229aa-abf5-47d6-9aba-c6ee012473b9", ArrayList.class);
+        //Rating[] ratingsOfUser = restTemplate.getForObject("http://localhost:8083/ratings/users/"+theUser.getUserId(), Rating[].class);
+
+        //also fetching hotels data
+        Rating[] ratingsOfUser = restTemplate.getForObject("http://localhost:8083/ratings/users/" + theUser.getUserId(), Rating[].class);
+
+
+        theUser.setRatings(Arrays.stream(ratingsOfUser).toList());
+        logger.info("{} ", ratingsOfUser);
+        return theUser;
+    }
 
 }
