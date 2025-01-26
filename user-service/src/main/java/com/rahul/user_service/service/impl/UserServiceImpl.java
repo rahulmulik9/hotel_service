@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
 
         User theUser = userRepository.findById(userId).orElseThrow(()->new ResourceNotFoundException("User not found"));
         //get rating from user directly (require the bean of  Rest template object which is declared in the main class)
-        /*Rating[] ratingsOfUser = restTemplate.getForObject("http://localhost:8083/ratings/users/e1f229aa-abf5-47d6-9aba-c6ee012473b9", Rating[].class);
+       /* Rating[] ratingsOfUser = restTemplate.getForObject("http://localhost:8083/ratings/users/e1f229aa-abf5-47d6-9aba-c6ee012473b9", Rating[].class);
         List<Rating> ratings = Arrays.stream(ratingsOfUser).toList();
         List<Rating> ratingList = ratings.stream().map(rating -> {
             Hotel hotel = restTemplate.getForObject("http://localhost:8082/hotels/1b6b9408-1221-4bf6-9951-8faaa81a0f6a", Hotel.class);
@@ -58,9 +58,9 @@ public class UserServiceImpl implements UserService {
         }).collect(Collectors.toList());*/
 
         //also fetching hotels data
-        Rating[] ratingsOfUser = restTemplate.getForObject("http://RATING_SERVICE/ratings/users/" + theUser.getUserId(), Rating[].class);List<Rating> ratings = Arrays.stream(ratingsOfUser).toList();
+        Rating[] ratingsOfUser = restTemplate.getForObject("http://localhost:8082/ratings/users/" + theUser.getUserId(), Rating[].class);List<Rating> ratings = Arrays.stream(ratingsOfUser).toList();
         List<Rating> ratingList = ratings.stream().map(rating -> {
-            Hotel hotel = restTemplate.getForObject("http://HOTEL_SERVICE/hotels/"+rating.getHotelId(), Hotel.class);
+            Hotel hotel = restTemplate.getForObject("http://localhost:8083/hotels/"+rating.getHotelId(), Hotel.class);
             rating.setHotel(hotel);
             return rating;
         }).collect(Collectors.toList());
