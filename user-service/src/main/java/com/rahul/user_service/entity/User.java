@@ -23,13 +23,12 @@ public class User {
     private String name;
 
     @Column(name = "EMAIL")
-
     private String email;
+
     @Column(name = "ABOUT")
     private String about;
-    //other user properties that you want
 
-    @Transient
+    @Transient   //don't store in database
     private List<Rating> ratings=new ArrayList<>();
 
 
