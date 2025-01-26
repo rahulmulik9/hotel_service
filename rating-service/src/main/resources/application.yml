@@ -4,3 +4,8 @@ spring:
       host: localhost
       port: 27017
       database: rating-service
+
+application:
+    name: rating_service
+server:
+  port: 8083
