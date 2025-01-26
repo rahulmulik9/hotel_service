@@ -58,9 +58,19 @@ public class UserServiceImpl implements UserService {
         }).collect(Collectors.toList());*/
 
         //also fetching hotels data
-        Rating[] ratingsOfUser = restTemplate.getForObject("http://localhost:8082/ratings/users/" + theUser.getUserId(), Rating[].class);List<Rating> ratings = Arrays.stream(ratingsOfUser).toList();
+        /*Rating[] ratingsOfUser = restTemplate.getForObject("http://localhost:8082/ratings/users/" + theUser.getUserId(), Rating[].class);List<Rating> ratings = Arrays.stream(ratingsOfUser).toList();
         List<Rating> ratingList = ratings.stream().map(rating -> {
             Hotel hotel = restTemplate.getForObject("http://localhost:8083/hotels/"+rating.getHotelId(), Hotel.class);
+            rating.setHotel(hotel);
+            return rating;
+        }).collect(Collectors.toList());*/
+
+        /*If we use http://RATING-SERVICEv instead of http://localhost:8082/ it wont work directly
+        * So just add annotation @LoadBalancer where the rest template bean is created*/
+
+        Rating[] ratingsOfUser = restTemplate.getForObject("http://RATING-SERVICE/ratings/users/" + theUser.getUserId(), Rating[].class);List<Rating> ratings = Arrays.stream(ratingsOfUser).toList();
+        List<Rating> ratingList = ratings.stream().map(rating -> {
+            Hotel hotel = restTemplate.getForObject("http://HOTEL-SERVICE/hotels/"+rating.getHotelId(), Hotel.class);
             rating.setHotel(hotel);
             return rating;
         }).collect(Collectors.toList());
