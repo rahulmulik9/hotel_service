@@ -54,6 +54,17 @@ public class UserServiceImpl implements UserService {
         //also fetching hotels data
         Rating[] ratingsOfUser = restTemplate.getForObject("http://localhost:8083/ratings/users/" + theUser.getUserId(), Rating[].class);
 
+        List<Rating> ratings = Arrays.stream(ratingsOfUser).toList();
+        List<Rating> ratingList = ratings.stream().map(rating -> {
+            //api call to hotel service to get the hotel
+            Hotel hotel = restTemplate.getForObject("http://localhost:8082/hotels/1b6b9408-1221-4bf6-9951-8faaa81a0f6a", Hotel.class);
+            //Hotel hotel = hotelService.getHotel(rating.getHotelId());
+            // logger.info("response status code: {} ",forEntity.getStatusCode());
+            //set the hotel to rating
+            rating.setHotel(hotel);
+            //return the rating
+            return rating;
+        }).collect(Collectors.toList());
 
         theUser.setRatings(Arrays.stream(ratingsOfUser).toList());
         logger.info("{} ", ratingsOfUser);
