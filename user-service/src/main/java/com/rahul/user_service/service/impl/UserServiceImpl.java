@@ -1,9 +1,11 @@
 package com.rahul.user_service.service.impl;
 
 
+import com.netflix.discovery.converters.Auto;
 import com.rahul.user_service.entity.Hotel;
 import com.rahul.user_service.entity.Rating;
 import com.rahul.user_service.exception.ResourceNotFoundException;
+import com.rahul.user_service.external_services.HotelService;
 import com.rahul.user_service.repository.UserRepository;
 import com.rahul.user_service.entity.User;
 import com.rahul.user_service.service.UserService;
@@ -28,6 +30,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
+    private HotelService hotelService;
 
     private Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -65,12 +69,22 @@ public class UserServiceImpl implements UserService {
             return rating;
         }).collect(Collectors.toList());*/
 
+        /// ///////////////////////////////////////////////////////////////////////////////
         /*If we use http://RATING-SERVICEv instead of http://localhost:8082/ it wont work directly
         * So just add annotation @LoadBalancer where the rest template bean is created*/
 
-        Rating[] ratingsOfUser = restTemplate.getForObject("http://RATING-SERVICE/ratings/users/" + theUser.getUserId(), Rating[].class);List<Rating> ratings = Arrays.stream(ratingsOfUser).toList();
+        /*Rating[] ratingsOfUser = restTemplate.getForObject("http://RATING-SERVICE/ratings/users/" + theUser.getUserId(), Rating[].class);List<Rating> ratings = Arrays.stream(ratingsOfUser).toList();
         List<Rating> ratingList = ratings.stream().map(rating -> {
             Hotel hotel = restTemplate.getForObject("http://HOTEL-SERVICE/hotels/"+rating.getHotelId(), Hotel.class);
+            rating.setHotel(hotel);
+            return rating;
+        }).collect(Collectors.toList());*/
+
+
+        /////////////////////////////////////////////////////////////////
+        Rating[] ratingsOfUser = restTemplate.getForObject("http://RATING-SERVICE/ratings/users/" + theUser.getUserId(), Rating[].class);List<Rating> ratings = Arrays.stream(ratingsOfUser).toList();
+        List<Rating> ratingList = ratings.stream().map(rating -> {
+            Hotel hotel = hotelService.getHotel(rating.getHotelId());
             rating.setHotel(hotel);
             return rating;
         }).collect(Collectors.toList());
