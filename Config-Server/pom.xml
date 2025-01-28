@@ -11,7 +11,7 @@
 	<groupId>com.rahul</groupId>
 	<artifactId>Config-Server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>ConfigServer</name>
+	<name>Config-Server</name>
 	<description>Config server for application</description>
 	<url/>
 	<licenses>
