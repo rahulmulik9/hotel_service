@@ -1,4 +1,4 @@
-package com.rahul.ConfigServer;
+package com.rahul.Config_Server;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
